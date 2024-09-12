@@ -1,0 +1,16 @@
+{
+    "ci": {
+      "collect": {
+        "url": ["https://your-website-url.com"],
+        "startServerCommand": "npm run start",
+        "numberOfRuns": 3
+      },
+      "assert": {
+        "preset": "lighthouse:recommended"
+      },
+      "upload": {
+        "target": "temporary-public-storage"
+      }
+    }
+  }
+  

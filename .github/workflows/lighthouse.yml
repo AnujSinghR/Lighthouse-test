@@ -28,5 +28,5 @@ jobs:
       - name: Upload Lighthouse Report
         uses: actions/upload-artifact@v3
         with:
-          name: lighthouse-report
+          name: lighthouse
           path: .lighthouseci/

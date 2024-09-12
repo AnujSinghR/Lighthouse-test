@@ -21,12 +21,18 @@ jobs:
 
       - name: Run Lighthouse CI
         run: |
-          lhci collect --url ${{ github.event.client_payload.url }} --numberOfRuns=3
+          echo "Collecting Lighthouse data..."
+          lhci collect --url https://google.com --numberOfRuns=3
+          echo "Uploading Lighthouse data..."
           lhci upload --target=temporary-public-storage
+          echo "Asserting Lighthouse data..."
           lhci assert --preset=lighthouse:recommended
+
+      - name: List Lighthouse Report Files
+        run: ls -alh .lighthouseci/
 
       - name: Upload Lighthouse Report
         uses: actions/upload-artifact@v3
         with:
-          name: lighthouse
+          name: lighthouse-report
           path: .lighthouseci/

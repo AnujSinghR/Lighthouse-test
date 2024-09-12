@@ -1,0 +1,32 @@
+name: Run Lighthouse
+
+on:
+  repository_dispatch:
+    types: [run-lighthouse]
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+
+      - name: Install Lighthouse CI
+        run: npm install -g @lhci/cli
+
+      - name: Run Lighthouse CI
+        run: |
+          lhci collect --url ${{ github.event.client_payload.url }} --numberOfRuns=3
+          lhci upload --target=temporary-public-storage
+          lhci assert --preset=lighthouse:recommended
+
+      - name: Upload Lighthouse Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: lighthouse-report
+          path: .lighthouseci/

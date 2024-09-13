@@ -31,7 +31,7 @@ jobs:
 
       - name: Send Lighthouse Report to Backend
         run: |
-           curl -X POST -H "Content-Type: application/json" -d @lighthouse-report.json http://localhost:8000/lighthouse-report
+           curl -X POST -H "Content-Type: application/json" -d @lighthouse-report.json https://light-house-backend.vercel.app/lighthouse-report
 
       - name: Upload Lighthouse Report as Artifact
         uses: actions/upload-artifact@v3

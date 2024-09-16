@@ -32,18 +32,18 @@ jobs:
           echo "URL fetched: $DYNAMIC_URL"
           echo "DYNAMIC_URL=$DYNAMIC_URL" >> $GITHUB_ENV
 
-      # Run Lighthouse using the dynamic URL
-      - name: Run Lighthouse and generate JSON report
+      # Run Lighthouse using the dynamic URL for desktop
+      - name: Run Lighthouse (Desktop) and generate JSON report
         run: |
-          echo "Collecting Lighthouse data for ${{ env.DYNAMIC_URL }}..."
-          lighthouse ${{ env.DYNAMIC_URL }} --output json --output-path ./lighthouse-report.json --chrome-flags="--headless" --only-categories=performance,accessibility,best-practices,seo --throttling-method=devtools
+          echo "Collecting Lighthouse data for desktop on ${{ env.DYNAMIC_URL }}..."
+          lighthouse ${{ env.DYNAMIC_URL }} --output json --output-path ./lighthouse-report-desktop.json --chrome-flags="--headless" --only-categories=performance,accessibility,best-practices,seo --preset=desktop --throttling-method=devtools
 
       - name: Send Lighthouse Report to Backend
         run: |
-          curl -X POST -H "Content-Type: application/json" -d @lighthouse-report.json https://light-house-backend.vercel.app/lighthouse-report
+          curl -X POST -H "Content-Type: application/json" -d @lighthouse-report-desktop.json https://light-house-backend.vercel.app/lighthouse-report
 
       - name: Upload Lighthouse Report as Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: lighthouse-report
-          path: lighthouse-report.json
+          name: lighthouse-report-desktop
+          path: lighthouse-report-desktop.json

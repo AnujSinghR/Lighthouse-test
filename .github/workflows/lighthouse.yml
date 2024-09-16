@@ -20,6 +20,9 @@ jobs:
           node-version: '18.x'
           cache: 'npm'
 
+      - name: Install dependencies
+        run: npm install
+
       - name: Install Lighthouse CLI
         run: npm install -g lighthouse@9.6.8
 

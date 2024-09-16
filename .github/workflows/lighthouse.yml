@@ -24,15 +24,23 @@ jobs:
       - name: Install Lighthouse
         run: npm install -g lighthouse
 
+      # Fetch the URL from backend
+      - name: Fetch URL from Backend
+        run: |
+          echo "Fetching URL from backend..."
+          export DYNAMIC_URL=$(curl -X POST https://your-backend-url.com/get-url -H "Content-Type: application/json" | jq -r '.url') # Adjust URL and response parsing as needed
+          echo "URL fetched: $DYNAMIC_URL"
+          echo "DYNAMIC_URL=$DYNAMIC_URL" >> $GITHUB_ENV
+
+      # Run Lighthouse using the dynamic URL
       - name: Run Lighthouse and generate JSON report
         run: |
-          echo "Collecting Lighthouse data..."
-          lighthouse https://example.com --output json --output-path ./lighthouse-report.json --chrome-flags="--headless" --only-categories=performance,accessibility,best-practices,seo --throttling-method=devtools
-
+          echo "Collecting Lighthouse data for ${{ env.DYNAMIC_URL }}..."
+          lighthouse ${{ env.DYNAMIC_URL }} --output json --output-path ./lighthouse-report.json --chrome-flags="--headless" --only-categories=performance,accessibility,best-practices,seo --throttling-method=devtools
 
       - name: Send Lighthouse Report to Backend
         run: |
-           curl -X POST -H "Content-Type: application/json" -d @lighthouse-report.json https://light-house-backend.vercel.app/lighthouse-report
+          curl -X POST -H "Content-Type: application/json" -d @lighthouse-report.json https://your-backend-url.com/lighthouse-report
 
       - name: Upload Lighthouse Report as Artifact
         uses: actions/upload-artifact@v3

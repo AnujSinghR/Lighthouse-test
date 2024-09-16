@@ -28,7 +28,7 @@ jobs:
       - name: Fetch URL from Backend
         run: |
           echo "Fetching URL from backend..."
-          export DYNAMIC_URL=$(curl -X POST https://your-backend-url.com/get-url -H "Content-Type: application/json" | jq -r '.url') # Adjust URL and response parsing as needed
+          export DYNAMIC_URL=$(curl -X POST https://light-house-backend.vercel.app/get-url -H "Content-Type: application/json" | jq -r '.url') # Adjust URL and response parsing as needed
           echo "URL fetched: $DYNAMIC_URL"
           echo "DYNAMIC_URL=$DYNAMIC_URL" >> $GITHUB_ENV
 
@@ -40,7 +40,7 @@ jobs:
 
       - name: Send Lighthouse Report to Backend
         run: |
-          curl -X POST -H "Content-Type: application/json" -d @lighthouse-report.json https://your-backend-url.com/lighthouse-report
+          curl -X POST -H "Content-Type: application/json" -d @lighthouse-report.json https://light-house-backend.vercel.app/lighthouse-report
 
       - name: Upload Lighthouse Report as Artifact
         uses: actions/upload-artifact@v3

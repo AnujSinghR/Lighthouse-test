@@ -2,11 +2,9 @@ name: Generate and Send Lighthouse Report (JSON)
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -16,26 +14,32 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Node.js
+      - name: Use Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18.x'
+          cache: 'npm'
 
-      - name: Install Lighthouse
-        run: npm install -g lighthouse
+      - name: Install Lighthouse CLI
+        run: npm install -g lighthouse@9.6.8
 
       - name: Run Lighthouse and generate JSON report
         run: |
-          echo "Collecting Lighthouse data..."
-          lighthouse https://example.com --output json --output-path ./lighthouse-report.json --chrome-flags="--headless" --only-categories=performance,accessibility,best-practices,seo --throttling-method=devtools
-
+          lighthouse https://example.com \
+            --chrome-flags="--headless --no-sandbox --disable-gpu" \
+            --only-categories=performance,accessibility,best-practices,seo \
+            --output json --output-path ./lighthouse-report.json \
+            --throttling-method=simulate
 
       - name: Send Lighthouse Report to Backend
         run: |
-           curl -X POST -H "Content-Type: application/json" -d @lighthouse-report.json https://light-house-backend.vercel.app/lighthouse-report
+          curl -X POST -H "Content-Type: application/json" \
+            -d @lighthouse-report.json \
+            https://light-house-backend.vercel.app/lighthouse-report
 
       - name: Upload Lighthouse Report as Artifact
         uses: actions/upload-artifact@v3
         with:
           name: lighthouse-report
           path: lighthouse-report.json
+          retention-days: 14

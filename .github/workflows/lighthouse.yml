@@ -26,11 +26,9 @@ jobs:
 
       - name: Run Lighthouse and generate JSON report
         run: |
-           lighthouse https://example.com \
-            --chrome-flags="--headless --no-sandbox --disable-gpu" \
-            --only-categories=performance,accessibility,best-practices,seo \
-            --output json --output-path ./lighthouse-report.json \
-            --throttling-method=simulate
+          echo "Collecting Lighthouse data..."
+          lighthouse https://example.com --output json --output-path ./lighthouse-report.json --chrome-flags="--headless" --only-categories=performance,accessibility,best-practices,seo --throttling-method=devtools
+
 
       - name: Send Lighthouse Report to Backend
         run: |
